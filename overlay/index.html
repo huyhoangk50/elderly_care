@@ -227,7 +227,7 @@
     var socket = socketCluster.create(options);
     // Convenience helpers
     socket.on('error', function (err) {
-      document.getElementById('error').innerHTML = 'Socket error' + err.toString());
+      document.getElementById('error').innerHTML = 'Socket error' + err.toString();
       throw 'Socket error - ' + err;
     });
     
