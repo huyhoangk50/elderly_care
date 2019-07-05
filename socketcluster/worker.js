@@ -31,29 +31,29 @@ class Worker extends SCWorker {
      * NOTE: Be sure to replace the following sample logic with your own logic.
      */
 
-    /**
+
     var count = 0;
     // Handle incoming websocket connections and listen for events.
     scServer.on('connection', function (socket) {
 
-      socket.on('sampleClientEvent', function (data) {
-        count++;
-        console.log('Handled sampleClientEvent', data);
-        scServer.exchange.publish('sample', count);
-      });
+      // socket.on('sampleClientEvent', function (data) {
+      //   count++;
+      //   console.log('Handled sampleClientEvent', data);
+      //   scServer.exchange.publish('sample', count);
+      // });
 
-      var interval = setInterval(function () {
-        socket.emit('random', {
-          number: Math.floor(Math.random() * 5)
-        });
-      }, 1000);
+      // var interval = setInterval(function () {
+      //   socket.emit('random', {
+      //     number: Math.floor(Math.random() * 5)
+      //   });
+      // }, 1000);
 
       socket.on('disconnect', function () {
         clearInterval(interval);
       });
 
     });
-    */
+
   }
 }
 
