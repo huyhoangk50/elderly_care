@@ -1,0 +1,261 @@
+
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  
+  <body>
+  <h3>Ohmni API test</h3>
+  <div style="text-align: center; padding-top: 25px">
+  <!-- <img src="cute-kitty-animated-gif-4.gif"/> -->
+  <iframe id="player" width="400" height="200" src="https://www.youtube.com/embed/vmDDOFXSgAs?enablejsapi=1&autoplay=1" frameborder="0" allowfullscreen></iframe>
+  </div>
+  
+  <div style="text-align:center; padding-top: 25px">
+  <button onclick="move()">Move back</button>
+  <button onclick="nod()">Nod</button>
+  <button onclick="praise()">Praise</button>
+  </div>
+  
+  <div>
+  <a href="dance.html">Start dance</a>
+  </div>
+  
+  <style>
+  button {
+    min-width: 200px;
+    min-height: 200px;
+  }
+  </style>
+  
+  </body>
+  
+  <script src="https://app-dev.ohmnilabs.com/api/Ohmni-standalone.js"></script>
+  <script script type="text/javascript" src="./socketCluster.js"></script>
+  <script type="text/javascript" src="https://www.youtube.com/player_api" async defer></script>
+  <script>
+  console.log("Ohmni here:", Ohmni)
+  function wait(cb, ms) {
+    setTimeout(function(){ cb(); }, ms);
+  }
+  
+  var lhue = 0;
+  
+  // Set up the beat here
+  function upbeat() {
+  
+    Ohmni.setNeckPosition(550, 140);
+    wait(function(){
+      downbeat();
+    }, 1000);
+  
+  }
+  
+  // Set up the beat here
+  function downbeat() {
+  
+    // Change light on every downbeat
+    Ohmni.setLightColor(lhue, 230, 100);
+    lhue += 20;
+    if (lhue > 255) lhue -= 256;
+  
+    // Perform upbeat next
+    Ohmni.setNeckPosition(350, 80);
+    wait(function(){
+      upbeat();
+    }, 500);
+  
+  }
+  
+  var player = null;
+  function onYouTubePlayerAPIReady() {
+    console.log("Player ready!");
+    player = new YT.Player('player', {
+            events: {
+              'onReady': onPlayerReady,
+              'onStateChange': onPlayerStateChange
+            }
+          });
+  }
+  
+  function onPlayerReady(event) {
+    console.log("Player is ready.");
+  
+    //Ohmni.setSpeechLanguage("zh-TW");
+    //Ohmni.say("你好");
+  
+    Ohmni.setSpeechLanguage("en-US");
+    Ohmni.say("Meo ready!", function(){
+  
+      Ohmni.setLightColor(30,230,100);
+    });
+  
+    var targ = event.target;
+    Ohmni.bindSpeechHandler("play video", ocb(function(){
+  
+      console.log("PLAY VIDEO");
+  
+      Ohmni.say("playing video.");
+      targ.playVideo();
+    }));
+  
+    Ohmni.bindSpeechHandler("flashlights", ocb(function(){
+      Ohmni.say("flashing lights.");
+      console.log("Flashing lights now.");
+      var hue = 80;
+      var phase = 0;
+      var count = 10;
+      var ival = setInterval(function(){
+        phase = 1 - phase;
+        Ohmni.setLightColor(hue, 230, phase == 0 ? 0 : 100);
+  
+        count -= 1;
+        if (count <= 0) {
+          clearInterval(ival);
+        }
+      }, 500);
+    }));
+  
+    //setInterval(function(){
+    //	console.log(player.getCurrentTime());
+    //}, 2000);
+  }
+  
+  function onPlayerStateChange(event) {
+    console.log("Player state change.");
+  }
+  
+  // Run a phase sequence
+  function run_phases(phasearr, idx) {
+  
+    // Check if we have something to do
+    if (idx >= phasearr.length) return;
+  
+    // Get and run the function with a callback to trigger next phase
+    var self = this;
+    var fn = phasearr[idx];
+    fn(function(){
+      setTimeout(function(){
+        self.run_phases(phasearr, idx+1);
+      }, 1);
+    });
+  
+  };
+  
+  // Wait and then trigger callback
+  function wait(cb, time) {
+    setTimeout(function() {
+      cb();
+    }, time);
+  }
+  
+  function move() {
+    var phases = [
+      function(cb) {
+        Ohmni.move(-100, 100, 2000);
+        wait(cb, 2000);
+      },
+    ];
+    run_phases(phases, 0);
+  }
+  
+  function praise() {
+    Ohmni.say("Meo is cool!", function(){
+  
+      console.log("Ohmni:");
+      console.log(Ohmni);
+      console.log("window:");
+      console.log(window);
+  
+    });
+  }
+  
+  function nod() {
+    var phases = [
+      function(cb) {
+        Ohmni.say("Nodding.");
+        wait(cb, 800);
+      },
+      function(cb) {
+        Ohmni.setNeckTorqueEnabled(1);
+              Ohmni.setNeckPosition(650, 100);
+        wait(cb, 800);
+      },
+      function(cb) {
+              Ohmni.setNeckPosition(350, 140);
+        wait(cb, 2000);
+      },
+      function(cb) {
+              Ohmni.setNeckPosition(650, 140);
+        wait(cb, 2000);
+      },
+      function(cb) {
+        Ohmni.setNeckTorqueEnabled(0);
+        wait(cb, 1);
+      },
+    ];
+    run_phases(phases, 0);
+  }
+
+  var options = {
+    path: '/socketcluster/',
+    port: 8000,
+    hostname: '192.168.1.229',
+    autoConnect: true,
+    secure: false,
+    rejectUnauthorized: false,
+    connectTimeout: 10000, //milliseconds
+    ackTimeout: 10000, //milliseconds
+    channelPrefix: null,
+    disconnectOnUnload: true,
+    multiplex: true,
+    autoReconnectOptions: {
+      initialDelay: 10000, //milliseconds
+      randomness: 10000, //milliseconds
+      multiplier: 1.5, //decimal
+      maxDelay: 60000 //milliseconds
+    },
+    authEngine: null,
+    codecEngine: null,
+    subscriptionRetryOptions: {},
+    query: {
+      yourparam: 'hello'
+    }
+  };
+  
+  // Initiate the connection to the server
+  var socket = socketCluster.create(options);
+  // Convenience helpers
+  socket.on('error', function (err) {
+    throw 'Socket error - ' + err;
+  });
+  
+  socket.on('connect', function () {
+    console.log('Connected to server');
+  });
+  var iotChanel = socket.subscribe('iot_chanel');
+  
+  iotChanel.on('subscribeFail', function(err) {  
+    console.log('Failed to subscribe to iot channel due to error: ' + err);
+  });
+  
+  chatChannel.watch(function (data) {  
+    const action = data.action;
+    console.log(action);
+    switch (action) {
+      case 'peace':
+        break;
+      case 'fist':
+        break;
+      case 'palm':
+        break;
+      case 'ok':
+        break;
+      case 'L':
+        break;
+    }
+  });
+  </script>
+</html>
+  
