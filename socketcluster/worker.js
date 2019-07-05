@@ -49,7 +49,7 @@ class Worker extends SCWorker {
       // }, 1000);
 
       socket.on('disconnect', function () {
-        clearInterval(interval);
+        // clearInterval(interval);
       });
 
     });
