@@ -30,7 +30,7 @@ def onConnectError(socket, error):
     
 if __name__ == "__main__":
     print(threading.activeCount())
-    socket = Socketcluster.socket("ws://localhost:8000/socketcluster/")
+    socket = Socketcluster.socket("ws://35.229.77.94:8000/socketcluster/")
     socket.setBasicListener(onconnect, ondisconnect, onConnectError)
     def threaded_function(args):
         socket.connect()
