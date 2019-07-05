@@ -240,7 +240,7 @@
     console.log('Failed to subscribe to iot channel due to error: ' + err);
   });
   
-  chatChannel.watch(function (data) {  
+  iotChanel.watch(function (data) {  
     const action = data.action;
     console.log(action);
     switch (action) {
