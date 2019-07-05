@@ -1,0 +1,1 @@
+Project for supporting elderly people
