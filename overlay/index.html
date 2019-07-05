@@ -240,6 +240,7 @@
       });
       
       iotChanel.watch(function (action) {
+        socket.emit('action', action);
         console.log(action)
         document.getElementById('result').innerHTML = action;
         switch (action) {
