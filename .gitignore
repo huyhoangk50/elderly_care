@@ -1,2 +1,4 @@
 socketcluster/node_modules
 socketcluster/package-lock.json
+server/node_modules
+server/package-lock.json

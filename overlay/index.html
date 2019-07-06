@@ -32,49 +32,13 @@
   <script type="text/javascript" src="https://www.youtube.com/player_api" async defer></script>
   <script>
 
-  // console.log("Ohmni here:", Ohmni)
-  // function wait(cb, ms) {
-  //   setTimeout(function(){ cb(); }, ms);
-  // }
-  
-  // var lhue = 0;
-  
-  // // Set up the beat here
-  // function upbeat() {
-  
-  //   Ohmni.setNeckPosition(550, 140);
-  //   wait(function(){
-  //     downbeat();
-  //   }, 1000);
-  
-  // }
-  
-  // // Set up the beat here
-  // function downbeat() {
-  
-  //   // Change light on every downbeat
-  //   Ohmni.setLightColor(lhue, 230, 100);
-  //   lhue += 20;
-  //   if (lhue > 255) lhue -= 256;
-  
-  //   // Perform upbeat next
-  //   Ohmni.setNeckPosition(350, 80);
-  //   wait(function(){
-  //     upbeat();
-  //   }, 500);
-  
-  // }
   
   
   function onPlayerReady(event) {
     console.log("Player is ready.");
   
-    //Ohmni.setSpeechLanguage("zh-TW");
-    //Ohmni.say("你好");
-  
     Ohmni.setSpeechLanguage("en-US");
     Ohmni.say("Meo ready!", function(){
-  
       Ohmni.setLightColor(30,230,100);
     });
   
@@ -172,12 +136,8 @@
         wait(cb, 2000);
       },
       function(cb) {
-              Ohmni.setNeckPosition(650, 140);
+        Ohmni.setNeckPosition(650, 140);
         wait(cb, 2000);
-      },
-      function(cb) {
-        Ohmni.setNeckTorqueEnabled(0);
-        wait(cb, 1);
       },
     ];
     run_phases(phases, 0);
@@ -191,6 +151,7 @@
 
   onload = (() => {
     console.log('document is loaded')
+    changeLightColor();
     var options = {
       path: '/socketcluster/',
       port: 8000,
@@ -243,8 +204,10 @@
           case 'Peace':
             break;
           case 'Fist':
+
             break;
           case 'Palm':
+            nod();
             break;
           case 'Okay':
             var weatherApiPolixy = 'https://cors-anywhere.herokuapp.com/';
@@ -263,11 +226,63 @@
             });
             break;
           case 'L':
+            const statement = calculateBiorhythmInfo();
+            console.log(statement);
+            Ohmni.say(statement);
             break;
         }
       });
     });
   })
+
+  function calculateBiorhythmInfo() {
+    var mydate = new Date(1994, 05, 20);
+    var today = new Date();
+    var periodTime = (today.getTime() - mydate.getTime())/86400000;
+    var emotion = Math.floor(Math.sin(2* Math.PI * periodTime/28) * 100);
+    var interlectual = Math.floor(Math.sin(periodTime/33) * 100);
+    var phisical = Math.floor(Math.sin(periodTime/23) * 100);
+    var statement = `Today your emotion is ${emotion} percent your interlectual is ${interlectual} percent your phisical state is ${phisical} percent`;
+    return statement;
+  }
+
+  function changeLightColor() {
+    var phases = [
+      function(cb) {
+        Ohmni.say("Change the light color");
+        wait(cb, 800);
+      },
+      function(cb) {
+        Ohmni.setLightColor(30,230,100);
+        wait(cb, 800);
+      },
+      function(cb) {
+        Ohmni.setLightColor(104,197,85);
+        wait(cb, 1000);
+      },
+      function(cb) {
+        Ohmni.setLightColor(235,217,55);
+        wait(cb, 1000);
+      },
+      function(cb) {
+        Ohmni.say("Change the light color");
+        wait(cb, 1000);
+      },
+      function(cb) {
+        Ohmni.setLightColor(30,230,100);
+        wait(cb, 1000);
+      },
+      function(cb) {
+        Ohmni.setLightColor(104,197,85);
+        wait(cb, 1000);
+      },
+      function(cb) {
+        Ohmni.setLightColor(235,217,55);
+        wait(cb, 1000);
+      },
+    ];
+    run_phases(phases, 0);
+  }
 
   </script>
 </html>
