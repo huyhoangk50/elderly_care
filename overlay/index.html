@@ -1,6 +1,5 @@
 
 <html>
-
   <head>
     <meta charset="utf-8" />
   </head>
@@ -138,7 +137,7 @@
         document.getElementById('result').innerHTML = action;
         switch (action) {
           case 'Fist':
-            Ohmni.say('Calling emergency')
+            callEmergency();
             break;
           case 'Okay':
             getWeather();
@@ -220,6 +219,19 @@
     });
   }
 
+  function callEmergency() {
+    var phases = [
+      function(cb) {
+        Ohmni.say('Calling emergency')
+        wait(cb, 500);
+      },
+      function(cb) {
+        Ohmni.say('Hello. My boss is in trouble. We need go to the emergency room right now. Please send a car to Duy Tan University in number 3 Quang Trung. Thank you so much.');
+        wait(cb, 800);
+      }
+    ];
+    run_phases(phases, 0);
+  }
   </script>
 </html>
   

@@ -4,8 +4,6 @@ import copy
 import cv2
 import numpy as np
 from keras.models import load_model
-from phue import Bridge
-from soco import SoCo
 from threading import Thread
 import threading
 from socketclusterclient import Socketcluster
@@ -24,9 +22,6 @@ def ondisconnect(socket):
 
 def onConnectError(socket, error):
     logging.info("On connect error got called")
-
-# def channelmessage(key, object):
-    # print ("Got data " + str(object) + " from key " + str(key))
     
 if __name__ == "__main__":
     print(threading.activeCount())
