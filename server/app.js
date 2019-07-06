@@ -5,7 +5,16 @@ const request = require('request');
 const btoa = require('btoa');
 var userId = '604618';
 var apiKey = 'de5a4d8efc792d8c1b80cb4915f53432';
-var data = 'JSON Request Data';
+var data = {
+  date: 25,
+  month: 12,
+  year: 1988,
+  hour: 4,
+  minute: 0,
+  latitude: 25.123,
+  longitude: 82.34,
+  timezone: 5.5
+}
 var headers = {
   "authorization": "Basic " + btoa(userId+":"+apiKey),
   "Content-Type":'application/json'
@@ -14,7 +23,7 @@ app.get('/', (req, res) => {
 
   request.post({
     url:'https://json.astrologyapi.com/v1/biorhythm', 
-    // formData: formData,
+    formData: data,
     headers: headers,
     dataType:'json',
   }, function optionalCallback(err, httpResponse, body) {
