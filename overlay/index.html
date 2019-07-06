@@ -6,13 +6,6 @@
   </head>
   
   <body onload="onload()" onbeforeunload = "closeSocket()">
-  <h3>Ohmni API test</h3>
-  
-  <div style="text-align:center; padding-top: 25px">
-  <button onclick="move()">Move back</button>
-  <button onclick="nod()">Nod</button>
-  <button onclick="praise()">Praise</button>
-  </div>
   <div id="result">
   </div>
   <div id="error">
@@ -32,50 +25,6 @@
   <script type="text/javascript" src="https://www.youtube.com/player_api" async defer></script>
   <script>
 
-  
-  
-  function onPlayerReady(event) {
-    console.log("Player is ready.");
-  
-    Ohmni.setSpeechLanguage("en-US");
-    Ohmni.say("Meo ready!", function(){
-      Ohmni.setLightColor(30,230,100);
-    });
-  
-    var targ = event.target;
-    Ohmni.bindSpeechHandler("play video", ocb(function(){
-  
-      console.log("PLAY VIDEO");
-  
-      Ohmni.say("playing video.");
-      targ.playVideo();
-    }));
-  
-    Ohmni.bindSpeechHandler("flashlights", ocb(function(){
-      Ohmni.say("flashing lights.");
-      console.log("Flashing lights now.");
-      var hue = 80;
-      var phase = 0;
-      var count = 10;
-      var ival = setInterval(function(){
-        phase = 1 - phase;
-        Ohmni.setLightColor(hue, 230, phase == 0 ? 0 : 100);
-  
-        count -= 1;
-        if (count <= 0) {
-          clearInterval(ival);
-        }
-      }, 500);
-    }));
-  
-    //setInterval(function(){
-    //	console.log(player.getCurrentTime());
-    //}, 2000);
-  }
-  
-  function onPlayerStateChange(event) {
-    console.log("Player state change.");
-  }
   
   // Run a phase sequence
   function run_phases(phasearr, idx) {
@@ -109,15 +58,6 @@
       },
     ];
     run_phases(phases, 0);
-  }
-  
-  function praise() {
-    Ohmni.say("Meo is cool!", function(){
-      console.log("Ohmni:");
-      console.log(Ohmni);
-      console.log("window:");
-      console.log(window);
-    });
   }
   
   function nod() {
@@ -187,9 +127,6 @@
     
     socket.on('connect', function () {
       console.log('Connected to server');
-      // const ohmniApiString = Object.keys(Ohmni).join(";;");
-      // document.getElementById('result').innerHTML = ohmniApiString;
-      document.getElementById('result').innerHTML = "Connected to server";
       var iotChanel = socket.subscribe('iot_chanel');
       iotChanel.on('subscribeFail', function(err) {  
         console.log('Failed to subscribe to iot channel due to error: ' + err);
@@ -200,19 +137,20 @@
         console.log(action)
         document.getElementById('result').innerHTML = action;
         switch (action) {
-          case 'Peace':
-            break;
           case 'Fist':
-            changeLightColor();
-            break;
-          case 'Palm':
-            nod();
+            Ohmni.say('Calling emergency')
             break;
           case 'Okay':
             getWeather();
             break;
           case 'L':
             calculateBiorhythmInfo();
+            break;
+          case 'Peace':
+            changeLightColor();
+            break;
+          case 'Palm':
+            nod();
             break;
         }
       });
@@ -226,7 +164,7 @@
     var emotion = Math.floor(Math.sin(2* Math.PI * periodTime/28) * 100);
     var interlectual = Math.floor(Math.sin(periodTime/33) * 100);
     var phisical = Math.floor(Math.sin(periodTime/23) * 100);
-    var statement = `Today your emotion is ${emotion} percent your interlectual is ${interlectual} percent your phisical state is ${phisical} percent`;
+    var statement = `Today your emotion is ${emotion} percent, your interlectual is ${interlectual} percent, your phisical state is ${phisical} percent`;
     Ohmni.say(statement);
     // return statement;
   }
