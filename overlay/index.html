@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
   </head>
   
-  <body onload="onload()">
+  <body onload="onload()" onbeforeunload = "closeSocket()">
   <h3>Ohmni API test</h3>
   
   <div style="text-align:center; padding-top: 25px">
@@ -65,16 +65,6 @@
   
   // }
   
-  // var player = null;
-  // function onYouTubePlayerAPIReady() {
-  //   console.log("Player ready!");
-  //   player = new YT.Player('player', {
-  //           events: {
-  //             'onReady': onPlayerReady,
-  //             'onStateChange': onPlayerStateChange
-  //           }
-  //         });
-  // }
   
   function onPlayerReady(event) {
     console.log("Player is ready.");
@@ -159,12 +149,10 @@
   
   function praise() {
     Ohmni.say("Meo is cool!", function(){
-  
       console.log("Ohmni:");
       console.log(Ohmni);
       console.log("window:");
       console.log(window);
-  
     });
   }
   
@@ -194,7 +182,13 @@
     ];
     run_phases(phases, 0);
   }
-  console.log("document")
+
+  closeSocket () {
+    alert("stop");
+    socket.emit('action', "disconnect");
+    socket.disconnect();
+  }
+
   onload = (() => {
     console.log('document is loaded')
     var options = {
@@ -251,16 +245,21 @@
           case 'Palm':
             break;
           case 'Okay':
-            // fetch('https://api.darksky.net/forecast/013cdcaf38369fbe7586addbf8e93714/16.08333,108.083328')
-            // .then(response => {
-            //   console.log(response)
-            //   return response.json()
-            // })
-            // .then(result => {
-            //   const statement = `The weather in Da Nang is ${result.currently.summary}. The temperature is about ${Math.floor((result.currently.temperature - 32) * 5/9)} C degree. The humidity is approximate ${result.currently.humidity}`;
-            //   console.log(statement);
-            //   Ohmni.say(statement);
-            // });
+            var weatherApiPolixy = 'https://cors-anywhere.herokuapp.com/';
+            var weatherApi = 'https://api.darksky.net/forecast/013cdcaf38369fbe7586addbf8e93714/16.08333,108.083328';
+            fetch(weatherApiPolixy + weatherApi, {
+              method: "GET",
+              headers: headers
+            })
+            .then(response => {
+              console.log(response)
+              return response.json()
+            })
+            .then(result => {
+              const statement = `The weather in Da Nang is ${result.currently.summary}. The temperature is about ${Math.floor((result.currently.temperature - 32) * 5/9)} C degree. The humidity is approximate ${result.currently.humidity}`;
+              console.log(statement);
+              Ohmni.say(statement);
+            });
             break;
           case 'L':
             break;
