@@ -183,7 +183,7 @@
     run_phases(phases, 0);
   }
 
-  closeSocket () {
+  closeSocket = () => {
     alert("stop");
     socket.emit('action', "disconnect");
     socket.disconnect();
