@@ -88,9 +88,9 @@ if __name__ == "__main__":
     # parameters
     cap_region_x_begin = 0.5  # start point/total width
     cap_region_y_end = 0.8  # start point/total width
-    threshold = 60  # binary threshold
+    threshold = 65  # binary threshold
     blurValue = 41  # GaussianBlur parameter
-    bgSubThreshold = 50
+    bgSubThreshold = 60
     learningRate = 0
 
     # variableslt

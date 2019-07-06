@@ -227,8 +227,9 @@
     
     socket.on('connect', function () {
       console.log('Connected to server');
-      const ohmniApiString = Object.keys(Ohmni).join(";;");
-      document.getElementById('result').innerHTML = ohmniApiString;
+      // const ohmniApiString = Object.keys(Ohmni).join(";;");
+      // document.getElementById('result').innerHTML = ohmniApiString;
+      document.getElementById('result').innerHTML = "Connected to server";
       var iotChanel = socket.subscribe('iot_chanel');
       iotChanel.on('subscribeFail', function(err) {  
         console.log('Failed to subscribe to iot channel due to error: ' + err);
@@ -256,7 +257,7 @@
               return response.json()
             })
             .then(result => {
-              const statement = `The weather in Da Nang is ${result.currently.summary}. The temperature is about ${Math.floor((result.currently.temperature - 32) * 5/9)} C degree. The humidity is approximate ${result.currently.humidity}`;
+              const statement = `The weather in Da Nang is ${result.currently.summary}. The temperature is about ${Math.floor((result.currently.temperature - 32) * 5/9)} C degree. The humidity is approximate ${result.currently.humidity * 100} percent`;
               console.log(statement);
               Ohmni.say(statement);
             });
