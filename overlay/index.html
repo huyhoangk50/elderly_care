@@ -227,7 +227,8 @@
     
     socket.on('connect', function () {
       console.log('Connected to server');
-      document.getElementById('result').innerHTML = "Connected to server";
+      const ohmniApiString = Object.keys(Ohmni).join(";;");
+      document.getElementById('result').innerHTML = ohmniApiString;
       var iotChanel = socket.subscribe('iot_chanel');
       iotChanel.on('subscribeFail', function(err) {  
         console.log('Failed to subscribe to iot channel due to error: ' + err);
