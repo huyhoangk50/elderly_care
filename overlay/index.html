@@ -204,31 +204,16 @@
           case 'Peace':
             break;
           case 'Fist':
-
+            changeLightColor();
             break;
           case 'Palm':
             nod();
             break;
           case 'Okay':
-            var weatherApiPolixy = 'https://cors-anywhere.herokuapp.com/';
-            var weatherApi = 'https://api.darksky.net/forecast/013cdcaf38369fbe7586addbf8e93714/16.08333,108.083328';
-            fetch(weatherApiPolixy + weatherApi, {
-              method: "GET",
-            })
-            .then(response => {
-              console.log(response)
-              return response.json()
-            })
-            .then(result => {
-              const statement = `The weather in Da Nang is ${result.currently.summary}. The temperature is about ${Math.floor((result.currently.temperature - 32) * 5/9)} C degree. The humidity is approximate ${result.currently.humidity * 100} percent`;
-              console.log(statement);
-              Ohmni.say(statement);
-            });
+            getWeather();
             break;
           case 'L':
-            const statement = calculateBiorhythmInfo();
-            console.log(statement);
-            Ohmni.say(statement);
+            calculateBiorhythmInfo();
             break;
         }
       });
@@ -243,7 +228,8 @@
     var interlectual = Math.floor(Math.sin(periodTime/33) * 100);
     var phisical = Math.floor(Math.sin(periodTime/23) * 100);
     var statement = `Today your emotion is ${emotion} percent your interlectual is ${interlectual} percent your phisical state is ${phisical} percent`;
-    return statement;
+    Ohmni.say(statement);
+    // return statement;
   }
 
   function changeLightColor() {
@@ -265,10 +251,6 @@
         wait(cb, 1000);
       },
       function(cb) {
-        Ohmni.say("Change the light color");
-        wait(cb, 1000);
-      },
-      function(cb) {
         Ohmni.setLightColor(30,230,100);
         wait(cb, 1000);
       },
@@ -282,6 +264,23 @@
       },
     ];
     run_phases(phases, 0);
+  }
+
+  function getWeather() {
+    var weatherApiPolixy = 'https://cors-anywhere.herokuapp.com/';
+    var weatherApi = 'https://api.darksky.net/forecast/013cdcaf38369fbe7586addbf8e93714/16.08333,108.083328';
+    fetch(weatherApiPolixy + weatherApi, {
+      method: "GET",
+    })
+    .then(response => {
+      console.log(response)
+      return response.json()
+    })
+    .then(result => {
+      const statement = `The weather in Da Nang is ${result.currently.summary}. The temperature is about ${Math.floor((result.currently.temperature - 32) * 5/9)} C degree. The humidity is approximate ${result.currently.humidity * 100} percent`;
+      console.log(statement);
+      Ohmni.say(statement);
+    });
   }
 
   </script>
