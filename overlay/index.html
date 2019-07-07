@@ -1,80 +1,82 @@
-
 <html>
-  <head>
-    <meta charset="utf-8" />
-  </head>
-  
-  <body onload="onload()" onbeforeunload = "closeSocket()">
+
+<head>
+  <meta charset="utf-8" />
+</head>
+
+<body onload="onload()" onbeforeunload="closeSocket()">
   <div id="result">
   </div>
   <div id="error">
   </div>
-  
+  <div id="emergency" style="display:none">
+    <img src="./emergency_call.png" style="width: 100%; height:100%" />
+  </div>
   <style>
-  button {
-    min-width: 200px;
-    min-height: 200px;
-  }
+    button {
+      min-width: 200px;
+      min-height: 200px;
+    }
   </style>
-  
-  </body>
-  
-  <script src="https://app-dev.ohmnilabs.com/api/Ohmni-standalone.js"></script>
-  <script script type="text/javascript" src="./socketCluster.js"></script>
-  <script type="text/javascript" src="https://www.youtube.com/player_api" async defer></script>
-  <script>
 
-  
+</body>
+
+<script src="https://app-dev.ohmnilabs.com/api/Ohmni-standalone.js"></script>
+<script script type="text/javascript" src="./socketCluster.js"></script>
+<script type="text/javascript" src="https://www.youtube.com/player_api" async defer></script>
+<script>
+
+
   // Run a phase sequence
   function run_phases(phasearr, idx) {
-  
+
     // Check if we have something to do
     if (idx >= phasearr.length) return;
-  
+
     // Get and run the function with a callback to trigger next phase
     var self = this;
     var fn = phasearr[idx];
-    fn(function(){
-      setTimeout(function(){
-        self.run_phases(phasearr, idx+1);
+    fn(function () {
+      setTimeout(function () {
+        self.run_phases(phasearr, idx + 1);
       }, 1);
     });
-  
+
   };
-  
+
   // Wait and then trigger callback
   function wait(cb, time) {
-    setTimeout(function() {
+    setTimeout(function () {
       cb();
     }, time);
   }
-  
+
   function move() {
     var phases = [
-      function(cb) {
+      function (cb) {
         Ohmni.move(-100, 100, 2000);
         wait(cb, 2000);
       },
     ];
     run_phases(phases, 0);
   }
-  
+
   function nod() {
     var phases = [
-      function(cb) {
+      function (cb) {
         Ohmni.say("Nodding.");
         wait(cb, 800);
       },
-      function(cb) {
+      function (cb) {
         Ohmni.setNeckTorqueEnabled(1);
-              Ohmni.setNeckPosition(650, 100);
+        Ohmni.setNeckPosition(650, 100);
         wait(cb, 800);
       },
-      function(cb) {
-              Ohmni.setNeckPosition(350, 140);
+      function (cb) {
+        Ohmni.setNeckPosition(350, 140);
         wait(cb, 2000);
       },
-      function(cb) {
+      function (cb) {
         Ohmni.setNeckPosition(650, 140);
         wait(cb, 2000);
       },
@@ -115,7 +117,7 @@
         yourparam: 'hello'
       }
     };
-    
+
     // Initiate the connection to the server
     var socket = socketCluster.create(options);
     // Convenience helpers
@@ -123,14 +125,14 @@
       document.getElementById('error').innerHTML = 'Socket error' + err.toString();
       throw 'Socket error - ' + err;
     });
-    
+
     socket.on('connect', function () {
       console.log('Connected to server');
       var iotChanel = socket.subscribe('iot_chanel');
-      iotChanel.on('subscribeFail', function(err) {  
+      iotChanel.on('subscribeFail', function (err) {
         console.log('Failed to subscribe to iot channel due to error: ' + err);
       });
-      
+
       iotChanel.watch(function (action) {
         socket.emit('action', action);
         console.log(action)
@@ -159,10 +161,10 @@
   function calculateBiorhythmInfo() {
     var mydate = new Date(1994, 05, 20);
     var today = new Date();
-    var periodTime = (today.getTime() - mydate.getTime())/86400000;
-    var emotion = Math.floor(Math.sin(2* Math.PI * periodTime/28) * 100);
-    var interlectual = Math.floor(Math.sin(periodTime/33) * 100);
-    var phisical = Math.floor(Math.sin(periodTime/23) * 100);
+    var periodTime = (today.getTime() - mydate.getTime()) / 86400000;
+    var emotion = Math.floor(Math.sin(2 * Math.PI * periodTime / 28) * 100);
+    var interlectual = Math.floor(Math.sin(periodTime / 33) * 100);
+    var phisical = Math.floor(Math.sin(periodTime / 23) * 100);
     var statement = `Today your emotion is ${emotion} percent, your interlectual is ${interlectual} percent, your phisical state is ${phisical} percent`;
     Ohmni.say(statement);
     // return statement;
@@ -170,32 +172,32 @@
 
   function changeLightColor() {
     var phases = [
-      function(cb) {
+      function (cb) {
         Ohmni.say("Change the light color");
         wait(cb, 800);
       },
-      function(cb) {
-        Ohmni.setLightColor(30,230,100);
+      function (cb) {
+        Ohmni.setLightColor(30, 230, 100);
         wait(cb, 800);
       },
-      function(cb) {
-        Ohmni.setLightColor(104,197,85);
+      function (cb) {
+        Ohmni.setLightColor(104, 197, 85);
         wait(cb, 1000);
       },
-      function(cb) {
-        Ohmni.setLightColor(235,217,55);
+      function (cb) {
+        Ohmni.setLightColor(235, 217, 55);
         wait(cb, 1000);
       },
-      function(cb) {
-        Ohmni.setLightColor(30,230,100);
+      function (cb) {
+        Ohmni.setLightColor(30, 230, 100);
         wait(cb, 1000);
       },
-      function(cb) {
-        Ohmni.setLightColor(104,197,85);
+      function (cb) {
+        Ohmni.setLightColor(104, 197, 85);
         wait(cb, 1000);
       },
-      function(cb) {
-        Ohmni.setLightColor(235,217,55);
+      function (cb) {
+        Ohmni.setLightColor(235, 217, 55);
         wait(cb, 1000);
       },
     ];
@@ -208,30 +210,34 @@
     fetch(weatherApiPolixy + weatherApi, {
       method: "GET",
     })
-    .then(response => {
-      console.log(response)
-      return response.json()
-    })
-    .then(result => {
-      const statement = `The weather in Da Nang is ${result.currently.summary}. The temperature is about ${Math.floor((result.currently.temperature - 32) * 5/9)} C degree. The humidity is approximate ${result.currently.humidity * 100} percent`;
-      console.log(statement);
-      Ohmni.say(statement);
-    });
+      .then(response => {
+        console.log(response)
+        return response.json()
+      })
+      .then(result => {
+        const statement = `The weather in Da Nang is ${result.currently.summary}. The temperature is about ${Math.floor((result.currently.temperature - 32) * 5 / 9)} C degree. The humidity is approximate ${result.currently.humidity * 100} percent`;
+        console.log(statement);
+        Ohmni.say(statement);
+      });
   }
 
   function callEmergency() {
     var phases = [
-      function(cb) {
-        Ohmni.say('Calling emergency')
-        wait(cb, 500);
+      function (cb) {
+        console.log(new Date(), 'show emergency');
+        Ohmni.say('Calling emergency');
+        document.getElementById('emergency').style.display = 'block';
+        wait(cb, 5000);
       },
-      function(cb) {
+      function (cb) {
+        console.log(new Date(), 'hide emergency');
+        document.getElementById('emergency').style.display = 'none';
         Ohmni.say('Hello. My boss is in trouble. We need go to the emergency room right now. Please send a car to Duy Tan University in number 3 Quang Trung. Thank you so much.');
         wait(cb, 800);
       }
     ];
     run_phases(phases, 0);
   }
-  </script>
+</script>
+
 </html>
-  
