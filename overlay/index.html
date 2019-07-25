@@ -89,6 +89,7 @@ video, #cssfilters-stream {
   </style>
   
 <body>
+  <div id = 'result'></div>
   
   <div id="screenshot" style="text-align:center;">
     <h3 id="toc-basic-demo">Basic demo</h3>
@@ -103,44 +104,45 @@ video, #cssfilters-stream {
     <p><button id="screenshot-button" disabled>Take screenshot</button></p>
   </div>
   
-  <script>
-    let localMediaStream;
-    const constraints = {video: true};
-    const captureVideoButton = document.querySelector('#screenshot .capture-button');
-    const screenshotButton = document.querySelector('#screenshot-button');
-    const img = document.querySelector('#screenshot img');
-    const video = document.querySelector('#screenshot video');
+    <script>
+      let localMediaStream;
+      const constraints = {video: true};
+      const captureVideoButton = document.querySelector('#screenshot .capture-button');
+      const screenshotButton = document.querySelector('#screenshot-button');
+      const img = document.querySelector('#screenshot img');
+      const video = document.querySelector('#screenshot video');
 
-    const canvas = document.createElement('canvas');
+      const canvas = document.createElement('canvas');
 
-    captureVideoButton.onclick = function() {
-      navigator.mediaDevices.getUserMedia(constraints).
-        then(handleSuccess).catch(handleError);
-    };
+      captureVideoButton.onclick = function() {
 
-    screenshotButton.onclick = video.onclick = function() {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-      // Other browsers will fall back to image/png
-      img.src = canvas.toDataURL('image/webp');
-    };
+        navigator.webkitGetUserMedia(constraints, handleSuccess, handleError);
+      };
 
-    function handleSuccess(stream) {
-      screenshotButton.disabled = false;
-      video.srcObject = stream;
-      localMediaStream = stream;
-    }
+      screenshotButton.onclick = video.onclick = function() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        // Other browsers will fall back to image/png
+        img.src = canvas.toDataURL('image/webp');
+      };
 
-    function handleError(error) {
-      console.error('navigator.getUserMedia error: ', error);
-    }
+      function handleSuccess(stream) {
+        screenshotButton.disabled = false;
+        video.srcObject = stream;
+        localMediaStream = stream;
+      }
 
-    document.querySelector('#stop-button').onclick = function() {
-      video.pause();
-      // localMediaStream.stop();
-    };
+      function handleError(error) {
+        console.error('navigator.getUserMedia error: ', error);
+        document.getElementById('result').innerHTML = 'navigator.getUserMedia error: ' + error;
+      }
 
-  </script>
+      document.querySelector('#stop-button').onclick = function() {
+        video.pause();
+        // localMediaStream.stop();
+      };
+
+    </script>
   </body>
-  
+</html>
