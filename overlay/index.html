@@ -89,7 +89,7 @@ video, #cssfilters-stream {
   </style>
   
 <body>
-
+  
   <div id="screenshot" style="text-align:center;">
     <h3 id="toc-basic-demo">Basic demo</h3>
     <div id="basic" style="text-align:center;">
@@ -105,6 +105,7 @@ video, #cssfilters-stream {
   
   <script>
     let localMediaStream;
+    navigator.getUserMedia();
     const constraints = {video: true};
     const captureVideoButton = document.querySelector('#screenshot .capture-button');
     const screenshotButton = document.querySelector('#screenshot-button');
