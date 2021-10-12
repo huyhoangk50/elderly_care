@@ -9,7 +9,7 @@ Keras-Preprocessing==1.0.9
 kiwisolver==1.0.1
 matplotlib==3.0.2
 numexpr==2.6.9
-opencv-python==4.0.0.21
+opencv-python==4.2.0.32
 pandas==0.24.1
 phue==1.1
 Pillow==5.4.1
